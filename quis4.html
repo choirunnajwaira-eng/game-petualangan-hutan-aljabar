@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kuis Aljabar</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #121212;
+      font-family: Arial, sans-serif;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    #bgVideo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;   /* supaya video tidak terpotong */
+  z-index: -1;         /* supaya video berada di belakang konten */
+}
+
+
+    .quiz-box {
+      background: #55e655;
+      padding: 30px;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .question {
+      font-size: 22px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .option {
+      background: #a1962f;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .option:hover {
+      background: #3a3a3a;
+    }
+
+    .correct {
+      background: #1f7a1f !important;
+    }
+
+    .wrong {
+      background: #a31515 !important;
+    }
+    
+
+    #nextBtn {
+      margin-top: 20px;
+      padding: 12px 25px;
+      background: #6a5acd;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      display: none;
+    }
+
+    #scoreBox {
+      font-size: 26px;
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-box">
+    <div id="question" class="question">Loading...</div>
+    <div id="options"></div>
+    <button id="nextBtn" onclick="nextQuestion()">Next</button>
+    <div id="scoreBox"></div>
+  </div>
+  <video autoplay muted loop id="bgVideo">
+  <source src="template quiz 1.mp4" type="video/mp4" />
+</video>
+
+
+  <script>
+    const quiz = [
+      {
+        q: "Gambar menunjukkan 3 kotak (□) dan 2 lingkaran (○). Bentuk aljabar yang tepat adalah ...",
+        options: ["3x + 2y", "2x + 3y", "5xy", "x + y"],
+        answer: 0
+      },
+      {
+        q: "Jika terdapat 4 apel dan 6 jeruk pada gambar, bentuk aljabar yang benar adalah ...",
+        options: ["4a + 6j", "6a + 4j", "10aj", "a + j"],
+        answer: 0
+      },
+      {
+        q: "Pada gambar tampak 5 bintang ⭐ dan 1 bulan 🌙. Bentuk aljabarnya adalah ...",
+        options: ["5b + 1m", "b + m", "6bm", "1b + 5m"],
+        answer: 0
+      },
+      {
+        q: "Jika di gambar terdapat 2 pensil ✏️ dan 3 buku 📘, bentuk aljabarnya adalah ...",
+        options: ["3p + 2b", "2p + 3b", "p + b", "6pb"],
+        answer: 1
+      },
+      {
+        q: "Gambar menunjukkan 7 balon 🎈. Bentuk aljabarnya adalah ...",
+        options: ["x + 7", "b + 7", "7b", "b7"],
+        answer: 2
+      }
+    ];
+
+    let index = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const q = quiz[index];
+      document.getElementById("question").innerText = q.q;
+
+      const optBox = document.getElementById("options");
+      optBox.innerHTML = "";
+
+      q.options.forEach((opt, i) => {
+        const div = document.createElement("div");
+        div.className = "option";
+        div.innerText = opt;
+        div.onclick = () => checkAnswer(div, i);
+        optBox.appendChild(div);
+      });
+    }
+
+    function checkAnswer(selected, i) {
+      const correctIndex = quiz[index].answer;
+
+      const options = document.querySelectorAll('.option');
+      options.forEach((opt, idx) => {
+        if (idx === correctIndex) opt.classList.add('correct');
+        else opt.classList.add('wrong');
+        opt.style.pointerEvents = 'none';
+      });
+
+      if (i === correctIndex) score++;
+
+      document.getElementById("nextBtn").style.display = "block";
+    }
+
+    function nextQuestion() {
+      index++;
+      document.getElementById("nextBtn").style.display = "none";
+
+      if (index < quiz.length) {
+        loadQuestion();
+      } else {
+        document.getElementById("scoreBox").innerText =
+          `Kamu menjawab benar ${score} dari ${quiz.length} soal!`;
+        document.getElementById("scoreBox").style.display = "block";
+        document.getElementById("question").style.display = "none";
+        document.getElementById("options").style.display = "none";
+      }
+    }
+
+    loadQuestion();
+  </script>
+
+</body>
+</html>
